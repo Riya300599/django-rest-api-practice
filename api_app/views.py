@@ -52,20 +52,20 @@ def login_view(request):
         return Response('Incorrect Password!', status=status.HTTP_401_UNAUTHORIZED)
 
     response = Response()
-    
+
     token = request.COOKIES.get('token')
 
     if token is None:
         token = user.token
-    
-    try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+    else:
+        try:
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
 
-        if int(user.id) != int(payload['id']):
-            response.delete_cookie('token')
+            if int(user.id) != int(payload['id']):
+                response.delete_cookie('token')
 
-    except jwt.ExpiredSignatureError:
-        token = user.token
+        except jwt.ExpiredSignatureError:
+            token = user.token
 
     data = {'id' : user.id, 'token' : token}
 
