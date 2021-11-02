@@ -63,6 +63,7 @@ def login_view(request):
 
             if int(user.id) != int(payload['id']):
                 response.delete_cookie('token')
+                token = user.token
 
         except jwt.ExpiredSignatureError:
             token = user.token
